@@ -1,0 +1,9 @@
+apply from: "./scripts/modular/modular.gradle"
+configSettings(this)
+
+include ':IModuleA'
+include ':ModuleA'
+include ':IModuleB'
+include ':ModuleB'
+include ':sample'
+rootProject.name = "airrouter-parent"

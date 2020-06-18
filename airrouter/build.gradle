@@ -1,0 +1,21 @@
+ext {
+    GROUP = "com.github.myth-china"
+    ARTIFACT_ID = "airrouter"
+    VERSION_NAME = "0.0.1-SNAPSHOT"
+}
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply from: "${project.rootDir}/scripts/publish.gradle"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}

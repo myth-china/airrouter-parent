@@ -1,0 +1,81 @@
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group = GROUP
+version = VERSION_NAME
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = ARTIFACT_ID
+            version = VERSION_NAME
+
+            from components.java
+
+            pom {
+                name = ARTIFACT_ID
+                description = 'AirRouter是一款轻量级的路由库，区别于主流路由，更轻量级，兼容性更强，使用更简单'
+                url = 'https://github.com/myth-china/airrouter-parent'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'yan66665'
+                        name = 'yanweiqiang'
+                        email = 'yan66665@126.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git@github.com:myth-china/airrouter-parent.git'
+                    developerConnection = 'scm:git@github.com:myth-china/airrouter-parent.git'
+                    url = 'https://github.com/myth-china/airrouter-parent'
+                }
+            }
+        }
+    }
+
+    repositories {
+        // The repository to publish to, Sonatype/MavenCentral
+        maven {
+            // This is an arbitrary name, you may also use "mavencentral" or
+            // any other name that's descriptive for you
+            name = "sonatype"
+
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+
+            // You only need this if you want to publish snapshots, otherwise just set the URL
+            // to the release repo directly
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            // The username and password we've fetched earlier
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
