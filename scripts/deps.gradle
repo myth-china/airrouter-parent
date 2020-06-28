@@ -160,9 +160,6 @@ deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
 deps.gson = "com.google.code.gson:gson:$versions.gson"
 deps.logger = 'com.orhanobut:logger:2.2.0'
 
-deps.airrouter = 'com.myth.arch.airrouter:airrouter:0.0.1-SNAPSHOT'
-deps.airrouter_processor = 'com.myth.arch.airrouter:airrouter-processor:0.0.1-SNAPSHOT'
-
 ext.deps = deps
 
 static def addRepos(RepositoryHandler handler) {

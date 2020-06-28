@@ -22,11 +22,11 @@ class Module {
 }
 
 def global = [:]
-global.src = true
+global.src = false
 ext.global = global
 
 ext.modules = [
-        new Module(true,
+        new Module(false,
                 "airrouter",
                 "./airrouter",
                 "com.github.myth-china",
