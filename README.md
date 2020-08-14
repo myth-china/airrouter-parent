@@ -32,8 +32,8 @@ interface IModuleAService {
 apply plugin:'kotlin-kapt'
 
 dependencies {
-  implementation 'com.github.myth-china:airrouter:0.0.1-SNAPSHOT'
-  kapt 'com.github.myth-china:airrouter-processor:0.0.1-SNAPSHOT'
+  implementation 'com.github.myth-china:airrouter:1.0.0'
+  kapt 'com.github.myth-china:airrouter-processor:1.0.0'
 }
 ```
 
@@ -151,8 +151,6 @@ License
 -------
 
 ```
-Copyright 2019 Square, Inc.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

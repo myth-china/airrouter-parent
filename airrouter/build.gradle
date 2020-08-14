@@ -1,7 +1,6 @@
 ext {
     GROUP = "com.github.myth-china"
     ARTIFACT_ID = "airrouter"
-    VERSION_NAME = "0.0.1-SNAPSHOT"
 }
 
 apply plugin: 'java-library'

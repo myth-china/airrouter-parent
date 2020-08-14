@@ -1,26 +1,67 @@
-apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+
+
+//load properties
+File localPropFile = project.rootProject.file('local.properties')
+
+if (localPropFile.exists()) {
+    println "Found secret props file, loading props"
+    Properties p = new Properties()
+    p.load(new FileInputStream(localPropFile))
+    p.each { name, value ->
+        ext[name] = value
+    }
+} else {
+    println "No props file, loading env vars"
+    ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
+    ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
+    ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_SECRET_KEY_RING_FILE')
+    ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
+    ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
+}
 
 group = GROUP
 version = VERSION_NAME
 
-java {
-    withJavadocJar()
-    withSourcesJar()
+//java
+if (project.plugins.hasPlugin('java-library')) {
+    apply plugin: 'java-library'
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    javadoc {
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
 }
 
-tasks.withType(GenerateModuleMetadata) {
-    enabled = false
+//android
+if (project.plugins.hasPlugin('com.android.library')) {
+    task androidSourcesJar(type: Jar) {
+        archiveClassifier.set 'sources'
+        from android.sourceSets.main.java.source
+    }
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        release(MavenPublication) {
             artifactId = ARTIFACT_ID
             version = VERSION_NAME
 
-            from components.java
+            if (project.plugins.hasPlugin('java-library')) {
+                from components.java
+            }
+
+            if (project.plugins.hasPlugin('com.android.library')) {
+                from components.release
+                archive androidSourcesJar
+            }
 
             pom {
                 name = ARTIFACT_ID
@@ -61,21 +102,16 @@ publishing {
             // You only need this if you want to publish snapshots, otherwise just set the URL
             // to the release repo directly
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
             // The username and password we've fetched earlier
             credentials {
-                username ossrhUsername
-                password ossrhPassword
+                username project.properties.get('ossrhUsername')
+                password project.properties.get('ossrhPassword')
             }
         }
     }
 }
 
 signing {
-    sign publishing.publications.mavenJava
-}
-
-javadoc {
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
+    sign publishing.publications
 }
